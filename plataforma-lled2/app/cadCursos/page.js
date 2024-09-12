@@ -14,7 +14,7 @@ export default function CadCursos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/auth/cursos', {
+      const response = await fetch('/api/auth/cadcurso', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, descricao, preco }),
