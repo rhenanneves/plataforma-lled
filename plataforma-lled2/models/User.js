@@ -1,31 +1,35 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
+// Define o schema do usuário
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: true
   },
   email: {
     type: String,
     required: true,
-    unique: true,
-  },
-  tipo: { 
-    type: String, 
-    enum: ["funcionario", "gerente", "admnistrador"], 
-    required: true 
+    unique: true
   },
   password: {
     type: String,
-    required: true,
+    required: true
   },
-  cursos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Curso" }],
+  tipo: {
+    type: String,
+    enum: ["funcionario", "gerente", "administrador"],
+    required: true
+  },
+  cursos: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Curso" 
+  }]
 });
 
-// Pre-save middleware para hash de senha
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+// Hash a senha antes de salvar (funciona para criação e atualização)
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
     return next();
   }
   const salt = await bcrypt.genSalt(10);
@@ -38,6 +42,7 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
+// Cria ou usa o modelo User
+const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
 export default User;
